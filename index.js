@@ -11,9 +11,11 @@ class Node {
   x = 0;
   y = 0;
   connected = new Set;
+  static store = new Set; // 인스턴스화 한 걸 저장하기위해 static 사용
   constructor(x, y){
     this.x = x;
     this.y = y;
+    Node.store.add(this);
   }
   connect(node){
     this.connected.add(node);
@@ -23,11 +25,10 @@ class Node {
 
 const DEG = Math.PI/180; // 1도
 const extend = (node) => {
-  const r = 60;
+  const r = 100;
   const theta = Math.random() * 180;
   const sin = Math.sin(DEG*theta) * r; //y
   const cos = Math.cos(DEG*theta) * r; //x
-  // 캔버스에 정해진 좌표 근처에(거리는 정하기 나름) 이미 존재하는 좌표가 있는지 확인할 수 있다. (isPointInPath) 불린값
   const nextNode = new Node(cos+node.x, sin+node.y);
   node.connect(nextNode);
   return {start: node, end: nextNode}
@@ -36,19 +37,25 @@ const createStruct = (node, length) => {
   let target = node;
   for(let i=0; i<length; i++){
     const {start, end} = extend(target);
+    extend(target);
     target = end;
+  }
+  return node;
+}
+const createStruct2 = (node, length) => {
+  for(let i=0; i<length; i++){
+    [...Node.store].forEach(node => extend(node));
   }
   return node;
 }
 
 const main = () => {
-  const s = createStruct(new Node(200, 250), 8);
+  const node = createStruct2(new Node(250, 50), 8);
   const drawed = new Set;
   
-  // 재귀로 돌려야함
-  let target = s;
-  const stack = [s];
-  while(target = stack.shift()){
+  let target = node;
+  const stack = [node];
+  while(target = stack.shift() || stack.length){
     if(drawed.has(target)) continue;
     ctx.beginPath();
     ctx.arc(target.x, target.y, 5, 0, 360, false);
@@ -59,9 +66,11 @@ const main = () => {
       ctx.moveTo(target.x, target.y);
       ctx.lineTo(node.x, node.y);
       ctx.stroke();
-    })
+    });
+
     drawed.add(target);
     stack.push(...target.connected);
   }
 }
+
 main();
