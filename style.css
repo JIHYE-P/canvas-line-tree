@@ -8,6 +8,7 @@ canvas {
   position: fixed;
   left: 200px;
   top: 150px;
-  background: #fff;
-  border: 1px solid #666;
+  background: #f8f8f8;
+  /* border: 1px solid #666; */
+  /* box-sizing: border-box; */
 }
