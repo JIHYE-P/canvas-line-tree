@@ -32,6 +32,7 @@ const nodeConnect = (length, x, y) => {
   }
   return nodes;
 }
+
 const nodeDrawing = (node) => {
   const r = 40;
   const theta = Math.random() * 360;
@@ -55,10 +56,6 @@ const nodeDrawing = (node) => {
 
 const main = () => {
   const length = 8;
-  const location = {
-    x: Math.random() * (canvas.width/2),
-    y: Math.random() * (canvas.height/2)
-  }
   const nodes = nodeConnect(length, 90, 150);
   nodes.forEach((node, i) => {
     const index = i+1;
